@@ -1,0 +1,207 @@
+/* styles/components/ReportForm.module.css */
+
+.formWrapper {
+    position: relative;
+    padding: 1rem;
+}
+
+.formTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #E30613;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #E30613;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+}
+
+.form {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section {
+    padding: 1.2rem;
+    background-color: #F5F5F5;
+    border-radius: 8px;
+    border-left: 2px solid #003087;
+    position: relative;
+}
+
+.section h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #E30613;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.column .grid {
+    grid-template-columns: 1fr;
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inputWrapper label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.inputWrapper input,
+.inputWrapper textarea,
+.inputWrapper select {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #B0B0B0;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #FFFFFF;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inputWrapper input:focus,
+.inputWrapper textarea:focus,
+.inputWrapper select:focus {
+    border-color: #E30613;
+    box-shadow: 0 0 8px rgba(227, 6, 19, 0.3);
+    outline: none;
+}
+
+.inputWrapper textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 150px;
+    width: 100%;
+}
+
+.inputWrapper select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23B0B0B0" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 14px;
+}
+
+.checkboxGroup {
+    display: flex;
+    gap: 2rem;
+    margin: 1rem 0;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: #003087;
+}
+
+.checkboxLabel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #E30613;
+    cursor: pointer;
+}
+
+.inputWrapper input[type="file"] {
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    color: #003087;
+    cursor: pointer;
+}
+
+.fileName {
+    font-size: 0.85rem;
+    color: #333;
+    margin-top: 0.3rem;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.submitButton {
+    background-color: #E30613;
+    color: #FFFFFF;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submitButton:disabled {
+    background-color: #B0B0B0;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1200px) {
+    .columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .columns> :nth-child(3) {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 900px) {
+    .columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .section {
+        padding: 0.8rem;
+    }
+
+    .buttonGroup {
+        flex-direction: column;
+    }
+
+    .submitButton {
+        width: 100%;
+        padding: 0.8rem;
+    }
+}

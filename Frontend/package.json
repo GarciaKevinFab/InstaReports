@@ -1,0 +1,25 @@
+{
+  "name": "instareports-frontend",
+  "version": "1.0.0",
+  "description": "Frontend para InstaReports - Sistema de gestion de reportes tecnicos",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "framer-motion": "^12.0.6",
+    "jspdf": "^3.0.1",
+    "next": "^15.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0",
+    "react-modal": "^3.16.3",
+    "react-textarea-autosize": "^8.5.7",
+    "react-toastify": "^11.0.5"
+  }
+}

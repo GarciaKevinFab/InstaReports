@@ -1,0 +1,127 @@
+/* styles/components/Navbar.module.css */
+
+/* Navbar styling */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #003087;
+    /* Logo blue for navbar background */
+    padding: 8px 24px;
+    color: #FFFFFF;
+    /* White text */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    /* Fix the navbar at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    /* Fixed height to prevent overlap */
+    z-index: 1001;
+}
+
+/* Logo container styling (to hold both logo and text) */
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* Space between logo and text */
+}
+
+/* Logo styling */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo a {
+    display: block;
+    /* Ensure the link wraps the image properly */
+}
+
+.logo img {
+    display: block;
+}
+
+/* Logo text styling */
+.logoText {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    /* White text to match navbar */
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* User section styling */
+.userSection {
+    display: flex;
+    align-items: center;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Adjusted gap to match screenshot */
+}
+
+.userName {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    color: #FFFFFF;
+    /* White text */
+    font-weight: 500;
+}
+
+.logoutButton {
+    background: #E30613;
+    /* Logo red for logout button */
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: #FFFFFF;
+    /* White text */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+
+.logoutButton:hover {
+    background: #C20511;
+    /* Slightly darker red for hover */
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.3);
+    /* Red shadow on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 8px 16px;
+    }
+
+    .userName {
+        font-size: 0.9rem;
+    }
+
+    .logoutButton {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .logo img {
+        width: 100px;
+        /* Further reduce logo size for smaller screens */
+        height: 25px;
+    }
+
+    .logoText {
+        font-size: 0.85rem;
+        /* Slightly smaller text on mobile */
+    }
+}
