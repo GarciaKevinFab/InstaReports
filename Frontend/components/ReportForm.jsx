@@ -35,8 +35,8 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
     // Rellenar formData con initialData cuando está en modo edición
     useEffect(() => {
         if (isEditMode && initialData) {
-            setFormData({
-                ...formData,
+            setFormData((prev) => ({
+                ...prev,
                 clientName: initialData.clientName || '',
                 clientAddress: initialData.clientAddress || '',
                 clientPhone: initialData.clientPhone || '',
@@ -60,7 +60,7 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
                 partsDetails: initialData.partsDetails || '',
                 partsOrdered: initialData.partsOrdered || false,
                 readyForPickup: initialData.readyForPickup || false,
-            });
+            }));
         }
     }, [initialData, isEditMode]);
 
@@ -81,7 +81,16 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
     };
 
     const handleFileChange = (e) => {
-        setFormData((prev) => ({ ...prev, files: e.target.files[0] }));
+        const file = e.target.files[0];
+        if (file) {
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                toast.error('El archivo no puede superar los 10MB');
+                e.target.value = '';
+                return;
+            }
+        }
+        setFormData((prev) => ({ ...prev, files: file || null }));
     };
 
     const handleSubmit = async (e) => {
@@ -419,10 +428,20 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
                             <h3>Información Adicional</h3>
                             <div className={styles.grid}>
                                 <motion.div className={styles.inputWrapper} whileHover="hover" whileFocus="focus" variants={inputVariants}>
-                                    <label>Adjuntar Archivo</label>
+                                    <label>Comentarios</label>
+                                    <textarea
+                                        name="comments"
+                                        value={formData.comments}
+                                        placeholder="Comentarios adicionales"
+                                        onChange={handleChange}
+                                    />
+                                </motion.div>
+                                <motion.div className={styles.inputWrapper} whileHover="hover" whileFocus="focus" variants={inputVariants}>
+                                    <label>Adjuntar Archivo (max 10MB)</label>
                                     <input
                                         type="file"
                                         onChange={handleFileChange}
+                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls"
                                     />
                                     {formData.files && <span className={styles.fileName}>{formData.files.name}</span>}
                                 </motion.div>

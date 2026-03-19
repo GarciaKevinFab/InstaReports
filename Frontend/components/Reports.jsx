@@ -320,22 +320,16 @@ const Reports = () => {
                                     )}
                                 </td>
 
-                                {/* Ready for Pickup - Technicians and admins can modify */}
-                                <td
-                                    onDoubleClick={() => toggleReadyForPickup(report._id, report.readyForPickup)}
-                                    className={report.readyForPickup ? styles.ready : styles.notReady}
-                                >
-                                    {report.readyForPickup ? (
-                                        <span className={styles.readyText}>
-                                            <RiCheckboxCircleLine size={18} style={{ marginRight: '5px' }} />
-                                            Listo
-                                        </span>
-                                    ) : (
-                                        <span className={styles.notReadyText}>
-                                            <RiCloseCircleLine size={18} style={{ marginRight: '5px' }} />
-                                            No Listo
-                                        </span>
-                                    )}
+                                {/* Ready for Pickup */}
+                                <td>
+                                    <label className={styles.switch}>
+                                        <input
+                                            type="checkbox"
+                                            checked={report.readyForPickup}
+                                            onChange={() => toggleReadyForPickup(report._id, report.readyForPickup)}
+                                        />
+                                        <span className={styles.slider}></span>
+                                    </label>
                                 </td>
 
                                 <td>

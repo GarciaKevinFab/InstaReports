@@ -20,10 +20,10 @@ export const protect = async (req, res, next) => {
             if (error.name === 'TokenExpiredError') {
                 return res.status(401).json({ message: 'Token expirado, inicie sesion nuevamente' });
             }
-            res.status(401).json({ message: 'No autorizado, token invalido' });
+            return res.status(401).json({ message: 'No autorizado, token invalido' });
         }
     } else {
-        res.status(401).json({ message: 'No autorizado, no se proporciono token' });
+        return res.status(401).json({ message: 'No autorizado, no se proporciono token' });
     }
 };
 

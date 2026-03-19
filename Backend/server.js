@@ -45,6 +45,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/users', userRoutes);
 
+// 404 para rutas no definidas
+app.use((req, res) => {
+    res.status(404).json({ message: 'Ruta no encontrada' });
+});
+
 // Middleware para manejo de errores
 app.use(errorHandler);
 

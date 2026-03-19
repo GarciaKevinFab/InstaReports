@@ -99,10 +99,11 @@ export const createReport = async (req, res) => {
     }
 };
 
-// Obtener todos los reportes
+// Obtener reportes (admin ve todos, tecnico solo los suyos)
 export const getReports = async (req, res) => {
     try {
-        const reports = await Report.find({}).populate('user', 'name email');
+        const filter = req.user.role === 'admin' ? {} : { user: req.user._id };
+        const reports = await Report.find(filter).populate('user', 'name email');
         res.json(reports);
     } catch (error) {
         console.error("Error al obtener los reportes:", error);

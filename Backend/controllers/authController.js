@@ -4,7 +4,7 @@ import { generateToken } from '../config/auth.js';
 // Registro de usuario
 export const registerUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({ message: 'Nombre, email y contraseña son obligatorios' });
@@ -19,7 +19,8 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'El usuario ya existe' });
         }
 
-        const user = await User.create({ name, email, password, role });
+        // Registro publico siempre crea tecnicos - solo admins crean otros admins via /api/users
+        const user = await User.create({ name, email, password, role: 'technician' });
 
         if (user) {
             res.status(201).json({
