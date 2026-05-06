@@ -1,16 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    output: 'export',
     images: {
-        remotePatterns: [
-            {
-                protocol: 'http',
-                hostname: 'localhost',
-                port: '4000',
-                pathname: '/uploads/**',
-            },
-        ],
+        unoptimized: true,
     },
+    trailingSlash: true,
 };
 
 module.exports = nextConfig;
