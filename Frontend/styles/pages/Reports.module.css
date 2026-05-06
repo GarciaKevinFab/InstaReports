@@ -4,43 +4,33 @@
     max-width: 1100px;
     margin: 0 auto;
     background-color: #F5F5F5;
-    /* Light gray background */
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    /* Subtle shadow for depth */
 }
 
-/* Header styling with centered title */
 .header {
     font-size: 2rem;
     font-weight: 700;
     color: #E30613;
-    /* Logo red for the header */
     margin-bottom: 0.5rem;
     text-align: center;
-    /* Centered title */
     letter-spacing: 0.02em;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Description below the header */
 .description {
     font-size: 1rem;
     color: #333333;
-    /* Dark gray for readability */
     text-align: center;
     margin-bottom: 2rem;
     font-weight: 400;
 }
 
-/* Error message styling */
 .error {
     color: #E30613;
-    /* Logo red for errors */
     background-color: #FFF1F2;
-    /* Very light red for error background */
     padding: 0.75rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
@@ -49,12 +39,9 @@
     font-size: 0.95rem;
 }
 
-/* Create button styling */
 .createButton {
     background-color: #E30613;
-    /* Logo red for primary action */
     color: #FFFFFF;
-    /* White text */
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 8px;
@@ -65,15 +52,12 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 2rem;
-    /* Centered button */
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
 }
 
 .createButton:hover {
     background-color: #C20511;
-    /* Slightly darker red for hover */
     box-shadow: 0 2px 10px rgba(227, 6, 19, 0.3);
-    /* Red shadow on hover */
 }
 
 /* Table styling */
@@ -81,44 +65,36 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 8px;
-    /* Space between rows */
     background-color: #FFFFFF;
-    /* White table background */
     border-radius: 10px;
     overflow: hidden;
 }
 
 .table th,
 .table td {
-    padding: 1rem;
+    padding: 0.75rem;
     text-align: left;
 }
 
 .table th {
     background-color: #003087;
-    /* Logo blue for table headers */
     color: #FFFFFF;
-    /* White text */
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     letter-spacing: 0.05em;
+    white-space: nowrap;
 }
 
 .table td {
     color: #333333;
-    /* Dark gray for text */
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     background-color: #FFFFFF;
-    /* White row background */
     border-bottom: 1px solid #E5E7EB;
-    /* Subtle row separation */
 }
 
-/* Hover effect for table rows */
 .table tbody tr:hover {
     background-color: #F1F5F9;
-    /* Light gray hover */
     transition: background-color 0.2s ease;
 }
 
@@ -144,7 +120,6 @@
     right: 0;
     bottom: 0;
     background-color: #B0B0B0;
-    /* Logo gray for neutral state */
     transition: 0.3s ease;
     border-radius: 22px;
 }
@@ -157,39 +132,16 @@
     left: 2px;
     bottom: 2px;
     background-color: #FFFFFF;
-    /* White switch knob */
     transition: 0.3s ease;
     border-radius: 50%;
 }
 
 .switch input:checked+.slider {
     background-color: #E30613;
-    /* Logo red for active state */
 }
 
 .switch input:checked+.slider:before {
     transform: translateX(18px);
-}
-
-/* Ready/Not Ready styling */
-.ready {
-    color: #E30613;
-    /* Logo red for ready */
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.notReady {
-    color: #B0B0B0;
-    /* Logo gray for not ready */
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 /* Action buttons */
@@ -198,29 +150,25 @@
     border: none;
     cursor: pointer;
     color: #003087;
-    /* Logo blue for edit/delete buttons */
-    margin: 0 0.5rem;
+    margin: 0 0.3rem;
     transition: color 0.2s ease, transform 0.2s ease;
+    padding: 4px;
 }
 
 .actionButton:hover {
     color: #002569;
-    /* Slightly darker blue for hover */
     transform: translateY(-2px);
-    /* Slight lift on hover */
 }
 
 .downloadButton {
     color: #E30613;
-    /* Logo red for download button */
 }
 
 .downloadButton:hover {
     color: #C20511;
-    /* Slightly darker red for hover */
 }
 
-/* Textarea wrapper for editable parts details */
+/* Textarea wrapper */
 .textareaWrapper {
     position: relative;
     display: flex;
@@ -229,32 +177,30 @@
 }
 
 .partsInput {
-    padding: 0.5rem;
+    padding: 0.4rem;
     border: 1px solid #B0B0B0;
-    /* Logo gray for border */
     border-radius: 6px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     resize: none;
     width: 100%;
+    min-width: 120px;
     transition: border-color 0.3s ease, box-shadow 0.2s ease;
 }
 
 .partsInput:focus {
     border-color: #E30613;
-    /* Logo red on focus */
     box-shadow: 0 0 5px rgba(227, 6, 19, 0.3);
-    /* Red shadow on focus */
     outline: none;
 }
 
 .textareaActions {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.3rem;
+    flex-shrink: 0;
 }
 
 .saveIcon {
     color: #E30613;
-    /* Logo red for save */
     cursor: pointer;
     transition: transform 0.2s ease;
 }
@@ -265,7 +211,6 @@
 
 .cancelIcon {
     color: #003087;
-    /* Logo blue for cancel */
     cursor: pointer;
     transition: transform 0.2s ease;
 }
@@ -283,11 +228,12 @@
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modalContent {
     background: #FFFFFF;
-    /* White background */
     padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -297,7 +243,6 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: #E30613;
-    /* Logo red for modal header */
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -313,36 +258,72 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1100;
 }
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
     .reportsContainer {
-        padding: 1.5rem;
+        padding: 1rem;
     }
 
     .table th,
     .table td {
-        padding: 0.75rem;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .tableWrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table {
+        min-width: 700px;
+    }
+
+    .modal {
+        width: 95%;
+        max-height: 85vh;
     }
 }
 
 @media (max-width: 600px) {
     .header {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
 
     .description {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
     }
 
     .createButton {
         width: 100%;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
     }
 
     .table {
         display: block;
         overflow-x: auto;
+        min-width: 600px;
+    }
+
+    .modal {
+        width: 98%;
+        top: 5%;
+        transform: none;
+        max-height: 90vh;
+    }
+
+    .modalContent {
+        padding: 1rem;
+    }
+
+    .modalHeader {
+        font-size: 1.2rem;
     }
 }

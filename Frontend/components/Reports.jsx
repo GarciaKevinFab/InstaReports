@@ -246,6 +246,7 @@ const Reports = () => {
                     <p>No hay reportes todavia. Crea el primero usando el boton de arriba.</p>
                 </motion.div>
             ) : (
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className={styles.table}>
                 <thead>
                     <tr>
@@ -373,6 +374,7 @@ const Reports = () => {
                     </AnimatePresence>
                 </tbody>
             </table>
+            </div>
             )}
 
             {/* Modal for creating a report - Available to all */}

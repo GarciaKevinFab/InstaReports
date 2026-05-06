@@ -1,43 +1,36 @@
 /* styles/components/Sidebar.module.css */
 
-/* Container for the sidebar */
 .sidebarContainer {
     position: relative;
 }
 
-/* Sidebar styling */
 .sidebar {
     width: 260px;
     height: calc(100vh - 60px);
-    /* Adjust height to account for navbar height */
     background-color: #003087;
-    /* Logo blue for sidebar background */
     padding: 20px;
     position: fixed;
     top: 60px;
-    /* Start below the navbar */
     left: 0;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow-y: auto;
 }
 
-/* Logo/Title styling */
 .logo {
     padding: 10px 0;
 }
 
 .logo h2 {
     color: #FFFFFF;
-    /* White text */
     font-size: 1.5rem;
     font-weight: 700;
     text-align: center;
     letter-spacing: 0.02em;
 }
 
-/* Menu styling */
 .menu {
     list-style: none;
     padding: 0;
@@ -45,11 +38,9 @@
     flex-grow: 1;
 }
 
-/* Menu item styling */
 .menuItem {
     padding: 12px 16px;
     color: #FFFFFF;
-    /* White text */
     display: flex;
     align-items: center;
     gap: 12px;
@@ -62,13 +53,10 @@
 
 .menuItem:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    /* Subtle white overlay on hover */
 }
 
-/* Active menu item styling */
 .menuItem.active {
     background-color: #E30613;
-    /* Logo red for active state */
     color: #FFFFFF;
     font-weight: 600;
 }
@@ -79,37 +67,33 @@
     gap: 12px;
 }
 
-/* Toggle button styling */
 .toggleButton {
-    position: absolute;
-    top: 20px;
+    position: fixed;
+    top: 80px;
     left: 260px;
     background-color: #E30613;
-    /* Logo red for toggle button */
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 1001;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease, left 0.3s ease;
 }
 
 .toggleButton:hover {
     background-color: #C20511;
-    /* Slightly darker red for hover */
     box-shadow: 0 2px 8px rgba(227, 6, 19, 0.3);
-    /* Red shadow on hover */
 }
 
 .rotatedIcon {
     transform: rotate(180deg);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .sidebar {
         width: 200px;
@@ -118,25 +102,17 @@
     .toggleButton {
         left: 200px;
     }
-
-    .toggleButton[variants="hidden"] {
-        left: -44px;
-        /* Adjust for smaller sidebar width */
-    }
 }
 
 @media (max-width: 480px) {
     .sidebar {
-        width: 180px;
+        width: 220px;
+        z-index: 1002;
     }
 
     .toggleButton {
-        left: 180px;
-    }
-
-    .toggleButton[variants="hidden"] {
-        left: -44px;
-        /* Adjust for smaller sidebar width */
+        left: 220px;
+        top: 75px;
     }
 
     .menuItem {

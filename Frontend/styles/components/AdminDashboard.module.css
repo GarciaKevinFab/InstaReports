@@ -1,39 +1,40 @@
 /* styles/components/AdminDashboard.module.css */
 
-/* Layout container */
 .layout {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* Main container for sidebar and content */
 .mainContainer {
     display: flex;
     flex: 1;
     margin-top: 60px;
-    /* Offset by the height of the navbar */
 }
 
-/* Content area */
 .content {
     flex: 1;
     padding: 20px;
     background: #F5F5F5;
-    /* Light gray background to match other components */
     min-height: calc(100vh - 60px - 40px);
-    /* Adjust height to account for navbar and footer */
+    transition: margin-left 0.3s ease;
 }
 
-/* Responsive adjustments */
+.contentWithSidebar {
+    margin-left: 260px;
+}
+
+.contentFull {
+    margin-left: 0;
+}
+
 @media (max-width: 768px) {
     .content {
         padding: 15px;
     }
 
-    .content[variants="visible"] {
+    .contentWithSidebar {
         margin-left: 200px;
-        /* Adjust for smaller sidebar width on medium screens */
     }
 }
 
@@ -42,8 +43,7 @@
         padding: 10px;
     }
 
-    .content[variants="visible"] {
-        margin-left: 180px;
-        /* Adjust for smaller sidebar width on small screens */
+    .contentWithSidebar {
+        margin-left: 0;
     }
 }

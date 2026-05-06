@@ -23,9 +23,9 @@ const TechSidebar = ({ onToggle }) => {
     };
 
     const toggleButtonVariants = {
-        hidden: { x: -244 },
-        visible: { x: 0, transition: { type: 'spring', stiffness: 200, damping: 25 } },
-        hover: { scale: 1.1, rotate: 10 },
+        hidden: { left: 10 },
+        visible: { left: undefined, transition: { type: 'spring', stiffness: 200, damping: 25 } },
+        hover: { scale: 1.1 },
         tap: { scale: 0.9 }
     };
 
@@ -47,7 +47,10 @@ const TechSidebar = ({ onToggle }) => {
         if (typeof window === 'undefined') return;
         if (item.path) {
             router.push(item.path);
-            setIsVisible(false);
+            if (window.innerWidth <= 768) {
+                setIsVisible(false);
+                if (onToggle) onToggle(false);
+            }
         } else if (item.action) {
             item.action();
         }

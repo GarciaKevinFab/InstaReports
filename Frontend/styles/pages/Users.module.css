@@ -279,13 +279,23 @@
     }
 }
 
+@media (max-width: 768px) {
+    .modal {
+        width: 95%;
+    }
+}
+
 @media (max-width: 600px) {
+    .usersContainer {
+        padding: 1rem;
+    }
+
     .header {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
 
     .description {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .createButton {
@@ -295,5 +305,29 @@
     .table {
         display: block;
         overflow-x: auto;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .modalContent {
+        padding: 1rem;
+    }
+
+    .modalHeader {
+        font-size: 1.2rem;
+    }
+
+    .modalActions {
+        flex-direction: column;
+    }
+
+    .saveButton,
+    .closeButton {
+        width: 100%;
+        justify-content: center;
     }
 }

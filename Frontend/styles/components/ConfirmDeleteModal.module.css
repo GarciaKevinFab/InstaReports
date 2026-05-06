@@ -8,7 +8,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     padding: 20px;
     max-width: 400px;
-    width: 100%;
+    width: 90%;
     outline: none;
 }
 
@@ -19,12 +19,14 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
 }
 
 .modalContent {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    position: relative;
 }
 
 .modalContent h2 {
@@ -46,29 +48,39 @@
 }
 
 .cancelButton {
-    background-color: #0400ff;
+    background-color: #003087;
     color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.cancelButton:hover {
+    background-color: #002569;
 }
 
 .confirmButton {
-    background-color: #ff4d4f;
+    background-color: #E30613;
     color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.confirmButton:hover {
+    background-color: #C20511;
 }
 
 .closeButton {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: -5px;
+    right: -5px;
     background: none;
     border: none;
     color: #666;
@@ -76,9 +88,36 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    padding: 4px;
 }
 
 .closeButton:hover {
     color: #333;
+}
+
+@media (max-width: 480px) {
+    .modal {
+        width: 92%;
+        padding: 16px;
+    }
+
+    .modalContent h2 {
+        font-size: 1.2rem;
+    }
+
+    .modalContent p {
+        font-size: 0.9rem;
+    }
+
+    .buttonContainer {
+        flex-direction: column;
+    }
+
+    .cancelButton,
+    .confirmButton {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
 }
