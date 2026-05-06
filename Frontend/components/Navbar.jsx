@@ -1,76 +1,62 @@
-import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuthContext } from '../contexts/AuthContext';
 import styles from '../styles/components/Navbar.module.css';
 import { motion } from 'framer-motion';
-import { RiUserLine, RiLogoutBoxLine } from 'react-icons/ri';
+import { RiLogoutBoxLine, RiMenuLine } from 'react-icons/ri';
 import Logo from '../assets/logo.png';
 
-const Navbar = () => {
+const Navbar = ({ onMenuToggle }) => {
     const { user, handleLogout } = useAuthContext();
 
-    const navVariants = {
-        hidden: { opacity: 0, y: -30 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { type: 'spring', stiffness: 150, damping: 20 }
-        }
-    };
-
-    const buttonVariants = {
-        hover: { scale: 1.1, rotate: 5 },
-        tap: { scale: 0.95 }
+    const getInitials = (name) => {
+        if (!name) return '?';
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     };
 
     return (
         <motion.nav
             className={styles.navbar}
-            variants={navVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ y: -64 }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
         >
-            <div className={styles.logoContainer}>
-                <motion.div
-                    className={styles.logo}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                >
-                    <Link href="/">
-                        <Image
-                            src={Logo}
-                            alt="InstaReports Logo"
-                            width={120}
-                            height={80}
-                            priority
-                        />
-                    </Link>
-                </motion.div>
-                <span className={styles.logoText}>SOLUCIONES INFORMÁTICAS</span>
+            <div className={styles.navLeft}>
+                <button className={styles.menuButton} onClick={onMenuToggle}>
+                    <RiMenuLine size={22} />
+                </button>
+                <div className={styles.logoContainer}>
+                    <div className={styles.logo}>
+                        <Link href="/">
+                            <Image src={Logo} alt="InstaReports" width={100} height={50} priority style={{ objectFit: 'contain' }} />
+                        </Link>
+                    </div>
+                    <span className={styles.logoText}>Soluciones Informáticas</span>
+                </div>
             </div>
 
-            <div className={styles.userSection}>
+            <div className={styles.navRight}>
                 {user && (
-                    <motion.div
-                        className={styles.userInfo}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                    >
-                        <span className={styles.userName}>
-                            <RiUserLine size={20} style={{ marginRight: '8px' }} /> {user.name}
-                        </span>
+                    <div className={styles.userInfo}>
+                        <div className={styles.userAvatar}>
+                            {getInitials(user.name)}
+                        </div>
+                        <div className={styles.userDetails}>
+                            <span className={styles.userName}>{user.name}</span>
+                            <span className={styles.userRole}>
+                                {user.role === 'admin' ? 'Administrador' : 'Técnico'}
+                            </span>
+                        </div>
                         <motion.button
                             onClick={handleLogout}
                             className={styles.logoutButton}
-                            variants={buttonVariants}
-                            whileHover="hover"
-                            whileTap="tap"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
-                            <RiLogoutBoxLine size={20} style={{ marginRight: '8px' }} /> Cerrar Sesión
+                            <RiLogoutBoxLine size={16} />
+                            <span>Salir</span>
                         </motion.button>
-                    </motion.div>
+                    </div>
                 )}
             </div>
         </motion.nav>

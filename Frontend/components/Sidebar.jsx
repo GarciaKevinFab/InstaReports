@@ -1,42 +1,12 @@
-// components/Sidebar.jsx
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import { RiDashboardLine, RiUserLine, RiFileList2Line, RiArrowLeftSLine, RiBarChartLine } from 'react-icons/ri';
 import styles from '../styles/components/Sidebar.module.css';
 
-const Sidebar = ({ onToggle }) => {
-    const [isVisible, setIsVisible] = useState(true);
+const Sidebar = ({ onToggle, isCollapsed, onCollapse, mobileOpen, onMobileClose }) => {
     const router = useRouter();
-
-    const sidebarVariants = {
-        hidden: {
-            x: -260,
-            opacity: 0,
-            transition: { type: 'spring', stiffness: 200, damping: 25, duration: 0.5 }
-        },
-        visible: {
-            x: 0,
-            opacity: 1,
-            transition: { type: 'spring', stiffness: 200, damping: 25, duration: 0.5 }
-        }
-    };
-
-    const toggleButtonVariants = {
-        hidden: { left: 10 },
-        visible: { left: undefined, transition: { type: 'spring', stiffness: 200, damping: 25 } },
-        hover: { scale: 1.1 },
-        tap: { scale: 0.9 }
-    };
-
-    const menuItemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: (i) => ({
-            opacity: 1,
-            y: 0,
-            transition: { delay: i * 0.1, type: 'spring', stiffness: 200 }
-        })
-    };
+    const [collapsed, setCollapsed] = useState(false);
 
     const menuItems = [
         { icon: <RiDashboardLine size={20} />, text: 'Dashboard', path: '/admin' },
@@ -46,69 +16,66 @@ const Sidebar = ({ onToggle }) => {
     ];
 
     const handleNavigation = (item) => {
-        if (typeof window === 'undefined') return;
         if (item.path) {
             router.push(item.path);
-            if (window.innerWidth <= 768) {
-                setIsVisible(false);
-                if (onToggle) onToggle(false);
-            }
-        } else if (item.action) {
-            item.action();
+            if (onMobileClose) onMobileClose();
         }
     };
 
     const handleToggle = () => {
-        setIsVisible(prev => !prev);
-        if (onToggle) {
-            onToggle(!isVisible); // Pass the new state to the layout
-        }
+        const next = !collapsed;
+        setCollapsed(next);
+        if (onCollapse) onCollapse(next);
     };
+
+    const sidebarClass = [
+        styles.sidebar,
+        collapsed ? styles.sidebarCollapsed : '',
+        mobileOpen ? styles.sidebarMobileOpen : '',
+    ].filter(Boolean).join(' ');
 
     return (
         <div className={styles.sidebarContainer}>
-            <motion.button
-                className={styles.toggleButton}
-                onClick={handleToggle}
-                variants={toggleButtonVariants}
-                initial="visible"
-                animate={isVisible ? 'visible' : 'hidden'}
-                whileHover="hover"
-                whileTap="tap"
-            >
-                <RiArrowLeftSLine size={24} className={!isVisible ? styles.rotatedIcon : ''} />
-            </motion.button>
+            {mobileOpen && (
+                <div className={`${styles.overlay} ${styles.overlayVisible}`} onClick={onMobileClose} />
+            )}
 
-            <motion.div
-                className={styles.sidebar}
-                variants={sidebarVariants}
-                initial="visible"
-                animate={isVisible ? 'visible' : 'hidden'}
-            >
+            <div className={sidebarClass}>
                 <div className={styles.logo}>
-                    <h2>Admin Panel</h2>
+                    <div className={styles.logoIcon}>SI</div>
+                    <span className={`${styles.logoText} ${collapsed ? styles.logoTextHidden : ''}`}>
+                        Admin Panel
+                    </span>
                 </div>
+
                 <ul className={styles.menu}>
-                    {menuItems.map((item, index) => (
+                    {menuItems.map((item) => (
                         <motion.li
                             key={item.text}
-                            custom={index}
-                            variants={menuItemVariants}
-                            initial="hidden"
-                            animate="visible"
-                            whileHover={{ scale: 1.05, x: 10 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
                             className={`${styles.menuItem} ${router.pathname === item.path ? styles.active : ''}`}
                             onClick={() => handleNavigation(item)}
+                            title={collapsed ? item.text : ''}
                         >
-                            <span>
-                                {item.icon}
+                            <span className={styles.menuItemIcon}>{item.icon}</span>
+                            <span className={`${styles.menuItemText} ${collapsed ? styles.menuItemTextHidden : ''}`}>
                                 {item.text}
                             </span>
                         </motion.li>
                     ))}
                 </ul>
-            </motion.div>
+
+                <div className={styles.sidebarFooter}>
+                    <p className={styles.versionText}>
+                        {collapsed ? 'v1' : 'InstaReports v1.0'}
+                    </p>
+                </div>
+
+                <button className={styles.toggleButton} onClick={handleToggle}>
+                    <RiArrowLeftSLine size={16} className={collapsed ? styles.rotatedIcon : ''} />
+                </button>
+            </div>
         </div>
     );
 };

@@ -1,27 +1,31 @@
-/* styles/components/AdminDashboard.module.css */
-
+/* Layout - Professional Redesign */
 .layout {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background: var(--bg-main);
 }
 
 .mainContainer {
     display: flex;
     flex: 1;
-    margin-top: 60px;
+    margin-top: var(--navbar-height);
 }
 
 .content {
     flex: 1;
-    padding: 20px;
-    background: #F5F5F5;
-    min-height: calc(100vh - 60px - 40px);
-    transition: margin-left 0.3s ease;
+    padding: 24px;
+    background: var(--bg-main);
+    min-height: calc(100vh - var(--navbar-height) - 40px);
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .contentWithSidebar {
-    margin-left: 260px;
+    margin-left: var(--sidebar-width);
+}
+
+.contentCollapsed {
+    margin-left: var(--sidebar-collapsed);
 }
 
 .contentFull {
@@ -30,20 +34,13 @@
 
 @media (max-width: 768px) {
     .content {
-        padding: 15px;
-    }
-
-    .contentWithSidebar {
-        margin-left: 200px;
+        padding: 16px;
+        margin-left: 0 !important;
     }
 }
 
 @media (max-width: 480px) {
     .content {
-        padding: 10px;
-    }
-
-    .contentWithSidebar {
-        margin-left: 0;
+        padding: 12px;
     }
 }
