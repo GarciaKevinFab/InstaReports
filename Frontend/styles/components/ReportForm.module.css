@@ -1,207 +1,257 @@
-/* styles/components/ReportForm.module.css */
-
 .formWrapper {
     position: relative;
-    padding: 1rem;
-}
-
-.formTitle {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #E30613;
-    margin-bottom: 1.5rem;
-    text-align: center;
+    padding: 0.5rem;
 }
 
 .closeButton {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
     background: none;
     border: none;
-    font-size: 1.5rem;
-    color: #E30613;
+    font-size: 1.3rem;
+    color: var(--text-muted);
     cursor: pointer;
     padding: 0.5rem;
     line-height: 1;
+    z-index: 2;
+    transition: var(--transition);
 }
 
-.form {
-    width: 100%;
-    box-sizing: border-box;
-}
+.closeButton:hover { color: var(--accent); }
+
+.form { width: 100%; }
 
 .columns {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1.2rem;
     align-items: start;
 }
 
-.column {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
+.column { display: flex; flex-direction: column; gap: 1.2rem; }
 
 .section {
-    padding: 1.2rem;
-    background-color: #F5F5F5;
-    border-radius: 8px;
-    border-left: 2px solid #003087;
-    position: relative;
+    padding: 1rem;
+    background: var(--bg-main);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--primary);
 }
 
 .section h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #E30613;
-    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
 }
 
-.grid {
-    display: grid;
-    gap: 1rem;
-}
+.grid { display: flex; flex-direction: column; gap: 0.7rem; }
 
-.column .grid {
-    grid-template-columns: 1fr;
-}
+.gridRow { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
 
 .inputWrapper {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
+    position: relative;
 }
 
 .inputWrapper label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #333;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .inputWrapper input,
 .inputWrapper textarea,
 .inputWrapper select {
-    padding: 0.6rem 0.8rem;
-    border: 1px solid #B0B0B0;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    color: #333;
-    background-color: #FFFFFF;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 0.55rem 0.7rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: white;
+    transition: var(--transition);
+    font-family: inherit;
 }
 
 .inputWrapper input:focus,
 .inputWrapper textarea:focus,
 .inputWrapper select:focus {
-    border-color: #E30613;
-    box-shadow: 0 0 8px rgba(227, 6, 19, 0.3);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 48, 135, 0.1);
     outline: none;
 }
 
-.inputWrapper textarea {
-    resize: vertical;
-    min-height: 80px;
-    max-height: 150px;
-    width: 100%;
-}
+.inputWrapper textarea { resize: vertical; min-height: 70px; max-height: 130px; }
 
 .inputWrapper select {
     appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23B0B0B0" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2364748b" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 0.8rem center;
+    background-position: right 0.6rem center;
     background-size: 14px;
+    cursor: pointer;
 }
 
-.checkboxGroup {
-    display: flex;
-    gap: 2rem;
-    margin: 1rem 0;
+.inputHint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: right;
 }
+
+/* Client Type Toggle */
+.clientTypeToggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0.8rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+}
+
+.toggleBtn {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    background: white;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.toggleBtn:first-child { border-right: 1px solid var(--border); }
+
+.toggleActive {
+    background: var(--primary);
+    color: white;
+}
+
+/* Autocomplete Dropdown */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    list-style: none;
+    padding: 4px;
+    margin: 4px 0 0;
+    z-index: 50;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dropdownItem {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--text-primary);
+    transition: background 0.15s ease;
+}
+
+.dropdownItem:hover,
+.dropdownItemActive {
+    background: var(--bg-main);
+    color: var(--primary);
+}
+
+/* Checkbox */
+.checkboxGroup { display: flex; gap: 1.5rem; margin: 0.5rem 0; }
 
 .checkboxLabel {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    color: #003087;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    cursor: pointer;
 }
 
 .checkboxLabel input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #E30613;
+    accent-color: var(--accent);
     cursor: pointer;
 }
 
 .inputWrapper input[type="file"] {
     padding: 0.4rem 0;
-    font-size: 0.9rem;
-    color: #003087;
+    font-size: 0.8rem;
     cursor: pointer;
 }
 
 .fileName {
-    font-size: 0.85rem;
-    color: #333;
-    margin-top: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 500;
 }
 
+/* Buttons */
 .buttonGroup {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
 }
 
 .submitButton {
-    background-color: #E30613;
-    color: #FFFFFF;
-    padding: 0.8rem 1.5rem;
+    background: var(--accent);
+    color: white;
+    padding: 0.7rem 1.5rem;
     border: none;
-    border-radius: 6px;
-    font-size: 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: var(--transition);
+    font-family: inherit;
 }
 
-.submitButton:disabled {
-    background-color: #B0B0B0;
-    cursor: not-allowed;
+.submitButton:hover { background: var(--accent-dark); }
+.submitButton:disabled { background: var(--text-muted); cursor: not-allowed; }
+
+.cancelButton {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.7rem 1.5rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
 }
+
+.cancelButton:hover { background: var(--bg-main); color: var(--text-primary); }
 
 @media (max-width: 1200px) {
-    .columns {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .columns> :nth-child(3) {
-        grid-column: span 2;
-    }
+    .columns { grid-template-columns: repeat(2, 1fr); }
+    .columns > :nth-child(3) { grid-column: span 2; }
 }
 
-@media (max-width: 900px) {
-    .columns {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 600px) {
-    .section {
-        padding: 0.8rem;
-    }
-
-    .buttonGroup {
-        flex-direction: column;
-    }
-
-    .submitButton {
-        width: 100%;
-        padding: 0.8rem;
-    }
+@media (max-width: 768px) {
+    .columns { grid-template-columns: 1fr; }
+    .columns > :nth-child(3) { grid-column: span 1; }
+    .gridRow { grid-template-columns: 1fr; }
+    .buttonGroup { flex-direction: column; }
+    .submitButton, .cancelButton { width: 100%; }
 }

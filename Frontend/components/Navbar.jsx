@@ -4,7 +4,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import styles from '../styles/components/Navbar.module.css';
 import { motion } from 'framer-motion';
 import { RiLogoutBoxLine, RiMenuLine } from 'react-icons/ri';
-import Logo from '../assets/logo.png';
+import Logo from '../assets/LOGO2_Mesa de trabajo 1.png';
 
 const Navbar = ({ onMenuToggle }) => {
     const { user, handleLogout } = useAuthContext();
