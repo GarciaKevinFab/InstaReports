@@ -393,9 +393,6 @@ const Reports = () => {
                     exit="exit"
                     transition={{ duration: 0.3 }}
                 >
-                    <h3 className={styles.modalHeader}>
-                        <RiFileList3Line size={24} style={{ marginRight: '8px' }} /> Crear Reporte
-                    </h3>
                     <ReportForm
                         refreshReports={refreshReports}
                         closeModal={() => setIsCreateModalOpen(false)}
@@ -420,9 +417,6 @@ const Reports = () => {
                         exit="exit"
                         transition={{ duration: 0.3 }}
                     >
-                        <h3 className={styles.modalHeader}>
-                            <RiEditLine size={24} style={{ marginRight: '8px' }} /> Editar Reporte
-                        </h3>
                         {editingReport && (
                             <ReportForm
                                 refreshReports={refreshReports}

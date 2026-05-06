@@ -4,19 +4,19 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { createReport, updateReport } from '../services/reportService';
 import styles from '../styles/components/ReportForm.module.css';
-import { RiBuilding2Line, RiUserLine } from 'react-icons/ri';
+import { RiBuilding2Line, RiUserLine, RiUser3Line, RiComputerLine, RiSettings3Line, RiFileTextLine } from 'react-icons/ri';
 
 const BRANDS = [
     'HP', 'Dell', 'Lenovo', 'Asus', 'Acer', 'Apple', 'Samsung', 'MSI', 'Toshiba', 'Sony',
-    'LG', 'Huawei', 'Xiaomi', 'Microsoft', 'Razer', 'Alienware', 'Gateway', 'Compaq',
+    'LG', 'Huawei', 'Xiaomi', 'Microsoft', 'Razer', 'Alienware', 'Compaq',
     'IBM', 'Fujitsu', 'Panasonic', 'NEC', 'Vaio', 'Gigabyte', 'Intel', 'AMD',
     'Epson', 'Canon', 'Brother', 'Ricoh', 'Xerox', 'Kyocera', 'Lexmark',
     'Cisco', 'TP-Link', 'D-Link', 'Netgear', 'Linksys', 'Ubiquiti', 'MikroTik',
     'Western Digital', 'Seagate', 'Kingston', 'Corsair', 'SanDisk', 'Crucial',
-    'Logitech', 'HyperX', 'Razer', 'SteelSeries', 'BenQ', 'ViewSonic', 'AOC',
+    'Logitech', 'HyperX', 'SteelSeries', 'BenQ', 'ViewSonic', 'AOC',
     'APC', 'Tripp Lite', 'CyberPower', 'Forza',
     'Dahua', 'Hikvision', 'Honeywell', 'Bosch',
-    'Zebra', 'Datalogic', 'Honeywell', 'Star Micronics',
+    'Zebra', 'Datalogic', 'Star Micronics',
 ];
 
 const EQUIPMENT_TYPES = [
@@ -25,11 +25,11 @@ const EQUIPMENT_TYPES = [
     'Monitor', 'Proyector', 'Scanner',
     'Router', 'Switch', 'Access Point', 'Modem', 'Firewall',
     'UPS', 'Estabilizador', 'Regulador de Voltaje',
-    'Disco Duro Externo', 'NAS', 'Unidad de Backup',
+    'Disco Duro Externo', 'NAS',
     'Tablet', 'Celular', 'Smartphone',
     'Cámara de Seguridad', 'DVR', 'NVR',
     'Teclado', 'Mouse', 'Webcam', 'Audífonos',
-    'POS', 'Lector de Código de Barras', 'Cajón de Dinero',
+    'POS', 'Lector de Código de Barras',
     'Otro',
 ];
 
@@ -40,86 +40,44 @@ function AutocompleteInput({ name, value, onChange, suggestions, placeholder, re
     const wrapperRef = useRef(null);
 
     useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-                setShowDropdown(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        const close = (e) => { if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setShowDropdown(false); };
+        document.addEventListener('mousedown', close);
+        return () => document.removeEventListener('mousedown', close);
     }, []);
 
-    const handleInputChange = (e) => {
+    const handleInput = (e) => {
         const val = e.target.value;
         onChange(e);
         if (val.length > 0) {
-            const f = suggestions.filter(s => s.toLowerCase().includes(val.toLowerCase()));
-            setFiltered(f.slice(0, 8));
+            const f = suggestions.filter(s => s.toLowerCase().includes(val.toLowerCase())).slice(0, 7);
+            setFiltered(f);
             setShowDropdown(f.length > 0);
-        } else {
-            setShowDropdown(false);
-        }
+        } else setShowDropdown(false);
         setHighlightIndex(-1);
     };
 
-    const handleSelect = (item) => {
-        onChange({ target: { name, value: item } });
-        setShowDropdown(false);
-    };
+    const handleSelect = (item) => { onChange({ target: { name, value: item } }); setShowDropdown(false); };
 
     const handleKeyDown = (e) => {
         if (!showDropdown) return;
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            setHighlightIndex(prev => Math.min(prev + 1, filtered.length - 1));
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            setHighlightIndex(prev => Math.max(prev - 1, 0));
-        } else if (e.key === 'Enter' && highlightIndex >= 0) {
-            e.preventDefault();
-            handleSelect(filtered[highlightIndex]);
-        } else if (e.key === 'Escape') {
-            setShowDropdown(false);
-        }
+        if (e.key === 'ArrowDown') { e.preventDefault(); setHighlightIndex(p => Math.min(p + 1, filtered.length - 1)); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlightIndex(p => Math.max(p - 1, 0)); }
+        else if (e.key === 'Enter' && highlightIndex >= 0) { e.preventDefault(); handleSelect(filtered[highlightIndex]); }
+        else if (e.key === 'Escape') setShowDropdown(false);
     };
 
     return (
         <div className={styles.inputWrapper} ref={wrapperRef}>
             <label>{label}</label>
-            <input
-                name={name}
-                value={value}
-                placeholder={placeholder}
-                onChange={handleInputChange}
-                onFocus={() => {
-                    if (value.length > 0) {
-                        const f = suggestions.filter(s => s.toLowerCase().includes(value.toLowerCase()));
-                        setFiltered(f.slice(0, 8));
-                        setShowDropdown(f.length > 0);
-                    }
-                }}
-                onKeyDown={handleKeyDown}
-                required={required}
-                autoComplete="off"
-            />
+            <input name={name} value={value} placeholder={placeholder} onChange={handleInput}
+                onFocus={() => { if (value) { const f = suggestions.filter(s => s.toLowerCase().includes(value.toLowerCase())).slice(0, 7); setFiltered(f); setShowDropdown(f.length > 0); } }}
+                onKeyDown={handleKeyDown} required={required} autoComplete="off" />
             <AnimatePresence>
                 {showDropdown && (
-                    <motion.ul
-                        className={styles.dropdown}
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        transition={{ duration: 0.15 }}
-                    >
+                    <motion.ul className={styles.dropdown} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.12 }}>
                         {filtered.map((item, i) => (
-                            <li
-                                key={item}
-                                className={`${styles.dropdownItem} ${i === highlightIndex ? styles.dropdownItemActive : ''}`}
-                                onClick={() => handleSelect(item)}
-                                onMouseEnter={() => setHighlightIndex(i)}
-                            >
-                                {item}
-                            </li>
+                            <li key={item} className={`${styles.dropdownItem} ${i === highlightIndex ? styles.dropdownItemActive : ''}`}
+                                onClick={() => handleSelect(item)} onMouseEnter={() => setHighlightIndex(i)}>{item}</li>
                         ))}
                     </motion.ul>
                 )}
@@ -134,246 +92,142 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
     const [clientType, setClientType] = useState('persona');
 
     const [formData, setFormData] = useState({
-        clientName: '',
-        clientAddress: '',
-        clientPhone: '',
-        clientDNI: '',
+        clientName: '', clientAddress: '', clientPhone: '', clientDNI: '',
         equipment: { type: '', brand: '', model: '', serial: '', patrimonialCode: '' },
-        faultDescription: '',
-        observations: '',
-        maintenanceType: 'Corrective',
-        status: 'Operative',
-        agreedPrice: '',
-        comments: '',
-        receptionDate: '',
-        deliveryDate: '',
-        files: null,
-        partsRequested: false,
-        partsDetails: '',
-        partsOrdered: false,
-        readyForPickup: false,
+        faultDescription: '', observations: '', maintenanceType: 'Corrective', status: 'Operative',
+        agreedPrice: '', comments: '', receptionDate: '', deliveryDate: '',
+        files: null, partsRequested: false, partsDetails: '', partsOrdered: false, readyForPickup: false,
     });
 
     useEffect(() => {
         if (isEditMode && initialData) {
             const dni = initialData.clientDNI || '';
             setClientType(dni.length === 11 ? 'empresa' : 'persona');
-            setFormData((prev) => ({
-                ...prev,
-                clientName: initialData.clientName || '',
-                clientAddress: initialData.clientAddress || '',
-                clientPhone: initialData.clientPhone || '',
-                clientDNI: dni,
-                equipment: {
-                    type: initialData.equipment?.type || '',
-                    brand: initialData.equipment?.brand || '',
-                    model: initialData.equipment?.model || '',
-                    serial: initialData.equipment?.serial || '',
-                    patrimonialCode: initialData.equipment?.patrimonialCode || '',
-                },
-                faultDescription: initialData.faultDescription || '',
-                observations: initialData.observations || '',
-                maintenanceType: initialData.maintenanceType || 'Corrective',
-                status: initialData.status || 'Operative',
-                agreedPrice: initialData.agreedPrice || '',
-                comments: initialData.comments || '',
+            setFormData(prev => ({
+                ...prev, clientName: initialData.clientName || '', clientAddress: initialData.clientAddress || '',
+                clientPhone: initialData.clientPhone || '', clientDNI: dni,
+                equipment: { type: initialData.equipment?.type || '', brand: initialData.equipment?.brand || '', model: initialData.equipment?.model || '', serial: initialData.equipment?.serial || '', patrimonialCode: initialData.equipment?.patrimonialCode || '' },
+                faultDescription: initialData.faultDescription || '', observations: initialData.observations || '',
+                maintenanceType: initialData.maintenanceType || 'Corrective', status: initialData.status || 'Operative',
+                agreedPrice: initialData.agreedPrice || '', comments: initialData.comments || '',
                 receptionDate: initialData.receptionDate ? initialData.receptionDate.split('T')[0] : '',
                 deliveryDate: initialData.deliveryDate ? initialData.deliveryDate.split('T')[0] : '',
-                partsRequested: initialData.partsRequested || false,
-                partsDetails: initialData.partsDetails || '',
-                partsOrdered: initialData.partsOrdered || false,
-                readyForPickup: initialData.readyForPickup || false,
+                partsRequested: initialData.partsRequested || false, partsDetails: initialData.partsDetails || '',
+                partsOrdered: initialData.partsOrdered || false, readyForPickup: initialData.readyForPickup || false,
             }));
         }
     }, [initialData, isEditMode]);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
-    };
-
-    const handleEquipmentChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            equipment: { ...prev.equipment, [name]: value },
-        }));
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 10 * 1024 * 1024) {
-                toast.error('El archivo no puede superar los 10MB');
-                e.target.value = '';
-                return;
-            }
-        }
-        setFormData((prev) => ({ ...prev, files: file || null }));
-    };
+    const handleChange = (e) => { const { name, value, type, checked } = e.target; setFormData(p => ({ ...p, [name]: type === 'checkbox' ? checked : value })); };
+    const handleEquipmentChange = (e) => { const { name, value } = e.target; setFormData(p => ({ ...p, equipment: { ...p.equipment, [name]: value } })); };
+    const handleFileChange = (e) => { const file = e.target.files[0]; if (file && file.size > 10 * 1024 * 1024) { toast.error('Max 10MB'); e.target.value = ''; return; } setFormData(p => ({ ...p, files: file || null })); };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (clientType === 'persona' && formData.clientDNI.length !== 8) {
-            toast.error('El DNI debe tener 8 dígitos');
-            return;
-        }
-        if (clientType === 'empresa' && formData.clientDNI.length !== 11) {
-            toast.error('El RUC debe tener 11 dígitos');
-            return;
-        }
-
+        const maxLen = clientType === 'empresa' ? 11 : 8;
+        if (formData.clientDNI.length !== maxLen) { toast.error(`${clientType === 'empresa' ? 'RUC' : 'DNI'} debe tener ${maxLen} dígitos`); return; }
         setIsLoading(true);
-        const dataToSubmit = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-            if (key === 'equipment') {
-                Object.entries(value).forEach(([eqKey, eqValue]) =>
-                    dataToSubmit.append(`equipment[${eqKey}]`, eqValue)
-                );
-            } else if (key !== 'files') {
-                dataToSubmit.append(key, value);
-            } else if (value) {
-                dataToSubmit.append('file', value);
-            }
+        const fd = new FormData();
+        Object.entries(formData).forEach(([k, v]) => {
+            if (k === 'equipment') Object.entries(v).forEach(([ek, ev]) => fd.append(`equipment[${ek}]`, ev));
+            else if (k !== 'files') fd.append(k, v);
+            else if (v) fd.append('file', v);
         });
-
         try {
-            isEditMode
-                ? await updateReport(initialData._id, dataToSubmit)
-                : await createReport(dataToSubmit);
-            toast.success(`Reporte ${isEditMode ? 'actualizado' : 'creado'} correctamente.`);
-            refreshReports();
-            closeModal();
-        } catch (error) {
-            toast.error('Error al guardar el reporte.');
-        } finally {
-            setIsLoading(false);
-        }
+            isEditMode ? await updateReport(initialData._id, fd) : await createReport(fd);
+            toast.success(`Reporte ${isEditMode ? 'actualizado' : 'creado'}`);
+            refreshReports(); closeModal();
+        } catch { toast.error('Error al guardar'); } finally { setIsLoading(false); }
     };
 
     return (
         <div className={styles.formWrapper}>
-            <motion.button
-                className={styles.closeButton}
-                onClick={closeModal}
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-            >
-                ✕
-            </motion.button>
+            <button className={styles.closeButton} onClick={closeModal}>✕</button>
 
             <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.columns}>
-                    {/* Col 1: Cliente + Equipo */}
-                    <div className={styles.column}>
-                        <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                            <h3>Información del Cliente</h3>
+                <div className={styles.formTitle}>
+                    <RiFileTextLine size={20} />
+                    {isEditMode ? 'Editar Reporte' : 'Nuevo Reporte'}
+                </div>
 
-                            {/* Toggle Persona / Empresa */}
+                <div className={styles.columns}>
+                    {/* LEFT COLUMN */}
+                    <div className={styles.column}>
+                        <div className={styles.section}>
+                            <h3><RiUser3Line size={13} /> Cliente</h3>
                             <div className={styles.clientTypeToggle}>
-                                <button
-                                    type="button"
-                                    className={`${styles.toggleBtn} ${clientType === 'persona' ? styles.toggleActive : ''}`}
-                                    onClick={() => { setClientType('persona'); setFormData(p => ({ ...p, clientDNI: '' })); }}
-                                >
-                                    <RiUserLine size={16} /> Persona
+                                <button type="button" className={`${styles.toggleBtn} ${clientType === 'persona' ? styles.toggleActive : ''}`}
+                                    onClick={() => { setClientType('persona'); setFormData(p => ({ ...p, clientDNI: '' })); }}>
+                                    <RiUserLine size={14} /> Persona
                                 </button>
-                                <button
-                                    type="button"
-                                    className={`${styles.toggleBtn} ${clientType === 'empresa' ? styles.toggleActive : ''}`}
-                                    onClick={() => { setClientType('empresa'); setFormData(p => ({ ...p, clientDNI: '' })); }}
-                                >
-                                    <RiBuilding2Line size={16} /> Empresa
+                                <button type="button" className={`${styles.toggleBtn} ${clientType === 'empresa' ? styles.toggleActive : ''}`}
+                                    onClick={() => { setClientType('empresa'); setFormData(p => ({ ...p, clientDNI: '' })); }}>
+                                    <RiBuilding2Line size={14} /> Empresa
                                 </button>
                             </div>
-
                             <div className={styles.grid}>
                                 <div className={styles.inputWrapper}>
-                                    <label>{clientType === 'empresa' ? 'Razón Social *' : 'Nombre del Cliente *'}</label>
-                                    <input name="clientName" value={formData.clientName} placeholder={clientType === 'empresa' ? 'Razón Social' : 'Nombre completo'} onChange={handleChange} required />
+                                    <label>{clientType === 'empresa' ? 'Razón Social *' : 'Nombre *'}</label>
+                                    <input name="clientName" value={formData.clientName} placeholder={clientType === 'empresa' ? 'Razón Social de la empresa' : 'Nombre completo'} onChange={handleChange} required />
+                                </div>
+                                <div className={styles.gridRow}>
+                                    <div className={styles.inputWrapper}>
+                                        <label>{clientType === 'empresa' ? 'RUC *' : 'DNI *'}</label>
+                                        <input name="clientDNI" value={formData.clientDNI}
+                                            placeholder={clientType === 'empresa' ? '20XXXXXXXXX' : '12345678'}
+                                            onChange={(e) => { const v = e.target.value.replace(/\D/g, ''); const m = clientType === 'empresa' ? 11 : 8; if (v.length <= m) handleChange({ target: { name: 'clientDNI', value: v } }); }}
+                                            required maxLength={clientType === 'empresa' ? 11 : 8} />
+                                        <span className={styles.inputHint}>{formData.clientDNI.length}/{clientType === 'empresa' ? 11 : 8}</span>
+                                    </div>
+                                    <div className={styles.inputWrapper}>
+                                        <label>Teléfono *</label>
+                                        <input name="clientPhone" value={formData.clientPhone} placeholder="987 654 321" onChange={handleChange} required />
+                                    </div>
                                 </div>
                                 <div className={styles.inputWrapper}>
                                     <label>Dirección *</label>
-                                    <input name="clientAddress" value={formData.clientAddress} placeholder="Dirección" onChange={handleChange} required />
-                                </div>
-                                <div className={styles.inputWrapper}>
-                                    <label>Teléfono *</label>
-                                    <input name="clientPhone" value={formData.clientPhone} placeholder="987 654 321" onChange={handleChange} required />
-                                </div>
-                                <div className={styles.inputWrapper}>
-                                    <label>{clientType === 'empresa' ? 'RUC *' : 'DNI *'}</label>
-                                    <input
-                                        name="clientDNI"
-                                        value={formData.clientDNI}
-                                        placeholder={clientType === 'empresa' ? '20XXXXXXXXX' : '12345678'}
-                                        onChange={(e) => {
-                                            const val = e.target.value.replace(/\D/g, '');
-                                            const max = clientType === 'empresa' ? 11 : 8;
-                                            if (val.length <= max) handleChange({ target: { name: 'clientDNI', value: val } });
-                                        }}
-                                        required
-                                        maxLength={clientType === 'empresa' ? 11 : 8}
-                                    />
-                                    <span className={styles.inputHint}>
-                                        {formData.clientDNI.length}/{clientType === 'empresa' ? 11 : 8} dígitos
-                                    </span>
+                                    <input name="clientAddress" value={formData.clientAddress} placeholder="Dirección completa" onChange={handleChange} required />
                                 </div>
                             </div>
-                        </motion.section>
+                        </div>
 
-                        <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                            <h3>Información del Equipo</h3>
+                        <div className={styles.section}>
+                            <h3><RiComputerLine size={13} /> Equipo</h3>
                             <div className={styles.grid}>
-                                <AutocompleteInput
-                                    name="type"
-                                    value={formData.equipment.type}
-                                    onChange={handleEquipmentChange}
-                                    suggestions={EQUIPMENT_TYPES}
-                                    placeholder="Escribe para buscar..."
-                                    required
-                                    label="Tipo de Equipo *"
-                                />
-                                <AutocompleteInput
-                                    name="brand"
-                                    value={formData.equipment.brand}
-                                    onChange={handleEquipmentChange}
-                                    suggestions={BRANDS}
-                                    placeholder="Escribe para buscar..."
-                                    required
-                                    label="Marca *"
-                                />
-                                <div className={styles.inputWrapper}>
-                                    <label>Modelo *</label>
-                                    <input name="model" value={formData.equipment.model} placeholder="Ej: ProBook 450 G7" onChange={handleEquipmentChange} required />
+                                <div className={styles.gridRow}>
+                                    <AutocompleteInput name="type" value={formData.equipment.type} onChange={handleEquipmentChange} suggestions={EQUIPMENT_TYPES} placeholder="Buscar tipo..." required label="Tipo *" />
+                                    <AutocompleteInput name="brand" value={formData.equipment.brand} onChange={handleEquipmentChange} suggestions={BRANDS} placeholder="Buscar marca..." required label="Marca *" />
                                 </div>
-                                <div className={styles.inputWrapper}>
-                                    <label>N° de Serie</label>
-                                    <input name="serial" value={formData.equipment.serial} placeholder="Número de Serie" onChange={handleEquipmentChange} />
+                                <div className={styles.gridRow}>
+                                    <div className={styles.inputWrapper}>
+                                        <label>Modelo *</label>
+                                        <input name="model" value={formData.equipment.model} placeholder="ProBook 450 G7" onChange={handleEquipmentChange} required />
+                                    </div>
+                                    <div className={styles.inputWrapper}>
+                                        <label>N° Serie</label>
+                                        <input name="serial" value={formData.equipment.serial} placeholder="Opcional" onChange={handleEquipmentChange} />
+                                    </div>
                                 </div>
                                 <div className={styles.inputWrapper}>
                                     <label>Código Patrimonial</label>
-                                    <input name="patrimonialCode" value={formData.equipment.patrimonialCode} placeholder="Código Patrimonial" onChange={handleEquipmentChange} />
+                                    <input name="patrimonialCode" value={formData.equipment.patrimonialCode} placeholder="Opcional" onChange={handleEquipmentChange} />
                                 </div>
                             </div>
-                        </motion.section>
+                        </div>
                     </div>
 
-                    {/* Col 2: Servicio */}
+                    {/* RIGHT COLUMN */}
                     <div className={styles.column}>
-                        <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                            <h3>Detalles del Servicio</h3>
+                        <div className={styles.section}>
+                            <h3><RiSettings3Line size={13} /> Servicio</h3>
                             <div className={styles.grid}>
                                 <div className={styles.inputWrapper}>
                                     <label>Descripción de la Falla *</label>
-                                    <textarea name="faultDescription" value={formData.faultDescription} placeholder="Describe el problema..." onChange={handleChange} required />
+                                    <textarea name="faultDescription" value={formData.faultDescription} placeholder="Describe el problema del equipo..." onChange={handleChange} required />
                                 </div>
                                 <div className={styles.inputWrapper}>
                                     <label>Observaciones</label>
-                                    <textarea name="observations" value={formData.observations} placeholder="Observaciones adicionales" onChange={handleChange} />
+                                    <textarea name="observations" value={formData.observations} placeholder="Notas adicionales..." onChange={handleChange} style={{ minHeight: 50 }} />
                                 </div>
                                 <div className={styles.gridRow}>
                                     <div className={styles.inputWrapper}>
@@ -391,9 +245,15 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
                                         </select>
                                     </div>
                                 </div>
-                                <div className={styles.inputWrapper}>
-                                    <label>Precio Acordado (S/) *</label>
-                                    <input type="number" name="agreedPrice" value={formData.agreedPrice} placeholder="0.00" onChange={handleChange} required min="0" step="0.01" />
+                                <div className={styles.gridRow}>
+                                    <div className={styles.inputWrapper}>
+                                        <label>Precio (S/) *</label>
+                                        <input type="number" name="agreedPrice" value={formData.agreedPrice} placeholder="0.00" onChange={handleChange} required min="0" step="0.01" />
+                                    </div>
+                                    <div className={styles.inputWrapper}>
+                                        <label>Comentarios</label>
+                                        <input name="comments" value={formData.comments} placeholder="Opcional" onChange={handleChange} />
+                                    </div>
                                 </div>
                                 <div className={styles.gridRow}>
                                     <div className={styles.inputWrapper}>
@@ -406,59 +266,42 @@ const ReportForm = ({ refreshReports, initialData = {}, isEditMode = false, clos
                                     </div>
                                 </div>
                             </div>
-                        </motion.section>
-                    </div>
+                        </div>
 
-                    {/* Col 3: Partes + Adicional */}
-                    <div className={styles.column}>
                         {isEditMode && (
-                            <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-                                <h3>Solicitud de Partes</h3>
+                            <div className={styles.section}>
+                                <h3>Partes</h3>
                                 <div className={styles.checkboxGroup}>
-                                    <label className={styles.checkboxLabel}>
-                                        <input type="checkbox" name="partsRequested" checked={formData.partsRequested} onChange={handleChange} disabled={isTechnician} />
-                                        Necesita Partes
-                                    </label>
-                                    <label className={styles.checkboxLabel}>
-                                        <input type="checkbox" name="partsOrdered" checked={formData.partsOrdered} onChange={handleChange} disabled={isTechnician} />
-                                        Partes Solicitadas
-                                    </label>
+                                    <label className={styles.checkboxLabel}><input type="checkbox" name="partsRequested" checked={formData.partsRequested} onChange={handleChange} disabled={isTechnician} /> Necesita Partes</label>
+                                    <label className={styles.checkboxLabel}><input type="checkbox" name="partsOrdered" checked={formData.partsOrdered} onChange={handleChange} disabled={isTechnician} /> Solicitadas</label>
                                 </div>
                                 <AnimatePresence>
                                     {formData.partsRequested && (
                                         <motion.div className={styles.inputWrapper} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-                                            <label>Detalles de las Partes</label>
-                                            <textarea name="partsDetails" value={formData.partsDetails} placeholder="Detalle de partes necesarias..." onChange={handleChange} />
+                                            <label>Detalle de Partes</label>
+                                            <textarea name="partsDetails" value={formData.partsDetails} placeholder="Partes necesarias..." onChange={handleChange} />
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
-                            </motion.section>
+                            </div>
                         )}
 
-                        <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: isEditMode ? 0.5 : 0.4 }}>
-                            <h3>Información Adicional</h3>
-                            <div className={styles.grid}>
-                                <div className={styles.inputWrapper}>
-                                    <label>Comentarios</label>
-                                    <textarea name="comments" value={formData.comments} placeholder="Comentarios adicionales..." onChange={handleChange} />
-                                </div>
-                                <div className={styles.inputWrapper}>
-                                    <label>Adjuntar Archivo (max 10MB)</label>
-                                    <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls" />
-                                    {formData.files && <span className={styles.fileName}>{formData.files.name}</span>}
-                                </div>
+                        <div className={styles.section}>
+                            <h3>Archivo</h3>
+                            <div className={styles.inputWrapper}>
+                                <label>Adjuntar (max 10MB)</label>
+                                <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls" />
+                                {formData.files && <span className={styles.fileName}>{formData.files.name}</span>}
                             </div>
-                        </motion.section>
+                        </div>
                     </div>
                 </div>
 
                 <div className={styles.buttonGroup}>
-                    <motion.button type="button" className={styles.cancelButton} onClick={closeModal} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                        Cancelar
-                    </motion.button>
-                    <motion.button type="submit" className={styles.submitButton} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} disabled={isLoading}>
-                        {isLoading ? 'Guardando...' : isEditMode ? 'Actualizar Reporte' : 'Crear Reporte'}
-                    </motion.button>
+                    <button type="button" className={styles.cancelButton} onClick={closeModal}>Cancelar</button>
+                    <button type="submit" className={styles.submitButton} disabled={isLoading}>
+                        {isLoading ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Crear Reporte'}
+                    </button>
                 </div>
             </form>
         </div>

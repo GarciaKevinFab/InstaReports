@@ -222,21 +222,20 @@
 /* Modal styling */
 .modal {
     outline: none;
-    max-width: 900px;
-    width: 90%;
+    max-width: 960px;
+    width: 94%;
     margin: 0 auto;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 .modalContent {
     background: #FFFFFF;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 .modalHeader {
@@ -254,7 +253,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
