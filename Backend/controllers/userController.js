@@ -1,4 +1,6 @@
 import User from '../models/User.js';
+import fs from 'fs';
+import path from 'path';
 
 // Obtener todos los usuarios
 export const getUsers = async (req, res) => {
@@ -71,6 +73,67 @@ export const updateUser = async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar usuario:', error);
         res.status(500).json({ message: 'Error al actualizar el usuario', error: error.message });
+    }
+};
+
+// Obtener perfil propio
+export const getMyProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password');
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener perfil', error: error.message });
+    }
+};
+
+// Actualizar perfil propio (nombre, posición, firma)
+export const updateMyProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        if (req.body.name !== undefined) user.name = req.body.name;
+        if (req.body.position !== undefined) user.position = req.body.position;
+
+        if (req.file) {
+            if (user.signatureUrl) {
+                const oldPath = path.join(process.cwd(), user.signatureUrl);
+                if (fs.existsSync(oldPath)) {
+                    try { fs.unlinkSync(oldPath); } catch {}
+                }
+            }
+            user.signatureUrl = req.file.path.replace(/\\/g, '/');
+        }
+
+        const updated = await user.save();
+        const response = updated.toObject();
+        delete response.password;
+        res.json(response);
+    } catch (error) {
+        console.error('Error al actualizar perfil:', error);
+        res.status(500).json({ message: 'Error al actualizar perfil', error: error.message });
+    }
+};
+
+// Eliminar firma propia
+export const removeMySignature = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+        if (user.signatureUrl) {
+            const oldPath = path.join(process.cwd(), user.signatureUrl);
+            if (fs.existsSync(oldPath)) {
+                try { fs.unlinkSync(oldPath); } catch {}
+            }
+            user.signatureUrl = '';
+            await user.save();
+        }
+        const response = user.toObject();
+        delete response.password;
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar firma', error: error.message });
     }
 };
 

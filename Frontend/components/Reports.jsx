@@ -18,6 +18,7 @@ import {
 } from 'react-icons/ri';
 import styles from '../styles/pages/Reports.module.css';
 import generateReportPDF from '../utils/generateReportPDF';
+import { getSettings } from '../services/settingsService';
 import { useAuthContext } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -75,6 +76,7 @@ const Reports = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [reportToDelete, setReportToDelete] = useState(null);
+    const [companySettings, setCompanySettings] = useState({});
 
     // Fetch reports on component mount
     useEffect(() => {
@@ -90,6 +92,7 @@ const Reports = () => {
             }
         };
         fetchReports();
+        getSettings().then(setCompanySettings).catch(() => {});
     }, []);
 
     const handleDelete = async (id) => {
@@ -195,14 +198,37 @@ const Reports = () => {
         exit: { opacity: 0, y: -20 }
     };
 
+    const getInitials = (name = '') => {
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 0 || !parts[0]) return '?';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    };
+
     return (
         <div className={styles.reportsContainer}>
-            <h2 className={styles.header}>
-                <RiFileList3Line size={28} style={{ marginRight: '8px' }} /> Reportes
-            </h2>
-            <p className={styles.description}>
-                Gestiona y visualiza los reportes de equipos, incluyendo su estado, partes necesarias y disponibilidad.
-            </p>
+            <div className={styles.headerBar}>
+                <div className={styles.headerLeft}>
+                    <h2 className={styles.header}>
+                        <RiFileList3Line size={22} /> Reportes
+                    </h2>
+                    <p className={styles.description}>
+                        Gestiona y visualiza los reportes de equipos, su estado y partes necesarias.
+                    </p>
+                </div>
+                <motion.button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className={styles.createButton}
+                    whileTap={{ scale: 0.97 }}
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                >
+                    <RiAddCircleLine size={18} />
+                    Crear Reporte
+                </motion.button>
+            </div>
+
             {error && (
                 <motion.p
                     className={styles.error}
@@ -214,25 +240,11 @@ const Reports = () => {
                 </motion.p>
             )}
 
-            {/* Allow all users (admins and technicians) to create reports */}
-            <motion.button
-                onClick={() => setIsCreateModalOpen(true)}
-                className={styles.createButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-            >
-                <RiAddCircleLine size={20} style={{ marginRight: '8px' }} />
-                Crear Reporte
-            </motion.button>
-
             {loading ? (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    style={{ textAlign: 'center', padding: '40px', color: '#999' }}
+                    style={{ textAlign: 'center', padding: '60px 20px', color: '#94a3b8' }}
                 >
                     <p>Cargando reportes...</p>
                 </motion.div>
@@ -240,24 +252,25 @@ const Reports = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    style={{ textAlign: 'center', padding: '40px', color: '#999' }}
+                    style={{ textAlign: 'center', padding: '60px 20px', color: '#94a3b8' }}
                 >
-                    <RiFileList3Line size={48} style={{ marginBottom: '10px', opacity: 0.5 }} />
-                    <p>No hay reportes todavia. Crea el primero usando el boton de arriba.</p>
+                    <RiFileList3Line size={48} style={{ marginBottom: '10px', opacity: 0.4 }} />
+                    <p>No hay reportes todavía. Crea el primero usando el botón de arriba.</p>
                 </motion.div>
             ) : (
+            <div className={styles.tableCard}>
             <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className={styles.table}>
                 <thead>
                     <tr>
-                        <th>Nombre del Cliente</th>
+                        <th>Cliente</th>
                         <th>Equipo</th>
                         <th>Estado</th>
                         <th>Necesita Partes</th>
                         <th>Detalles de Partes</th>
                         <th>Partes Solicitadas</th>
                         <th>Listo para Recoger</th>
-                        <th>Acciones</th>
+                        <th style={{ textAlign: 'right' }}>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -269,16 +282,31 @@ const Reports = () => {
                                 animate="visible"
                                 exit="exit"
                                 variants={rowVariants}
-                                whileHover={{ scale: 1.01 }}
-                                transition={{ duration: 0.3 }}
+                                transition={{ duration: 0.25 }}
                             >
-                                <td>{report.clientName}</td>
                                 <td>
-                                    {report.equipment
-                                        ? `${report.equipment.type} - ${report.equipment.brand} (${report.equipment.model})`
-                                        : 'N/A'}
+                                    <div className={styles.clientCell}>
+                                        <div className={styles.clientAvatar}>{getInitials(report.clientName)}</div>
+                                        <span className={styles.clientName}>{report.clientName}</span>
+                                    </div>
                                 </td>
-                                <td>{report.status === 'Operative' ? 'Operativo' : 'Inoperativo'}</td>
+                                <td>
+                                    {report.equipment ? (
+                                        <div className={styles.equipmentCell}>
+                                            <span className={styles.equipmentType}>{report.equipment.type}</span>
+                                            <span className={styles.equipmentMeta}>
+                                                {report.equipment.brand}{report.equipment.model ? ` · ${report.equipment.model}` : ''}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span className={styles.naText}>N/A</span>
+                                    )}
+                                </td>
+                                <td>
+                                    <span className={`${styles.badge} ${report.status === 'Operative' ? styles.badgeOperative : styles.badgeInoperative}`}>
+                                        {report.status === 'Operative' ? 'Operativo' : 'Inoperativo'}
+                                    </span>
+                                </td>
 
                                 {/* Switch for "Needs Parts" - Technicians and admins can modify */}
                                 <td>
@@ -301,14 +329,14 @@ const Reports = () => {
                                             isTechnician={isTechnician}
                                         />
                                     ) : (
-                                        "N/A"
+                                        <span className={styles.naText}>N/A</span>
                                     )}
                                 </td>
 
                                 {/* Show "Parts Ordered" - Technicians can only view, admins can modify */}
                                 <td>
                                     {isTechnician ? (
-                                        report.partsOrdered ? 'Sí' : 'No'
+                                        <span className={styles.naText}>{report.partsOrdered ? 'Sí' : 'No'}</span>
                                     ) : (
                                         <label className={styles.switch}>
                                             <input
@@ -334,46 +362,49 @@ const Reports = () => {
                                 </td>
 
                                 <td>
-                                    {/* Download button for all users (admins and technicians) */}
-                                    <motion.button
-                                        onClick={() => generateReportPDF(report)}
-                                        className={`${styles.actionButton} ${styles.downloadButton}`}
-                                        whileHover={{ scale: 1.1 }}
-                                        title="Descargar PDF"
-                                    >
-                                        <RiDownloadLine size={20} />
-                                    </motion.button>
+                                    <div className={styles.actionsCell}>
+                                        {/* Download button for all users (admins and technicians) */}
+                                        <motion.button
+                                            onClick={() => generateReportPDF(report, companySettings)}
+                                            className={`${styles.actionButton} ${styles.downloadButton}`}
+                                            whileTap={{ scale: 0.92 }}
+                                            title="Descargar PDF"
+                                        >
+                                            <RiDownloadLine size={16} />
+                                        </motion.button>
 
-                                    {/* Only admins can edit or delete */}
-                                    {!isTechnician && (
-                                        <>
-                                            <motion.button
-                                                onClick={() => {
-                                                    setEditingReport(report);
-                                                    setIsEditModalOpen(true);
-                                                }}
-                                                className={styles.actionButton}
-                                                whileHover={{ scale: 1.1 }}
-                                                title="Editar reporte"
-                                            >
-                                                <RiEditLine size={20} />
-                                            </motion.button>
-                                            <motion.button
-                                                onClick={() => openDeleteModal(report._id)}
-                                                className={styles.actionButton}
-                                                whileHover={{ scale: 1.1 }}
-                                                title="Eliminar reporte"
-                                            >
-                                                <RiDeleteBin6Line size={20} />
-                                            </motion.button>
-                                        </>
-                                    )}
+                                        {/* Only admins can edit or delete */}
+                                        {!isTechnician && (
+                                            <>
+                                                <motion.button
+                                                    onClick={() => {
+                                                        setEditingReport(report);
+                                                        setIsEditModalOpen(true);
+                                                    }}
+                                                    className={styles.actionButton}
+                                                    whileTap={{ scale: 0.92 }}
+                                                    title="Editar reporte"
+                                                >
+                                                    <RiEditLine size={16} />
+                                                </motion.button>
+                                                <motion.button
+                                                    onClick={() => openDeleteModal(report._id)}
+                                                    className={`${styles.actionButton} ${styles.deleteButton}`}
+                                                    whileTap={{ scale: 0.92 }}
+                                                    title="Eliminar reporte"
+                                                >
+                                                    <RiDeleteBin6Line size={16} />
+                                                </motion.button>
+                                            </>
+                                        )}
+                                    </div>
                                 </td>
                             </motion.tr>
                         ))}
                     </AnimatePresence>
                 </tbody>
             </table>
+            </div>
             </div>
             )}
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { RiDashboardLine, RiFileList2Line, RiMenuFoldLine, RiMenuUnfoldLine } from 'react-icons/ri';
+import { RiDashboardLine, RiFileList2Line, RiMenuFoldLine, RiMenuUnfoldLine, RiUser3Line } from 'react-icons/ri';
 import styles from '../styles/components/Sidebar.module.css';
 import LogoIcon from '../assets/logo-icon.png';
 
@@ -13,6 +13,7 @@ const TechSidebar = ({ onCollapse, mobileOpen, onMobileClose }) => {
     const menuItems = [
         { icon: <RiDashboardLine size={20} />, text: 'Dashboard', path: '/dashboard/technician' },
         { icon: <RiFileList2Line size={20} />, text: 'Reportes', path: '/tech/reports' },
+        { icon: <RiUser3Line size={20} />, text: 'Mi Perfil', path: '/tech/profile' },
     ];
 
     const handleNavigation = (item) => {

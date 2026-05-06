@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { RiDashboardLine, RiUserLine, RiFileList2Line, RiBarChartLine, RiMenuFoldLine, RiMenuUnfoldLine } from 'react-icons/ri';
+import { RiDashboardLine, RiUserLine, RiFileList2Line, RiBarChartLine, RiMenuFoldLine, RiMenuUnfoldLine, RiSettings4Line, RiUser3Line } from 'react-icons/ri';
 import styles from '../styles/components/Sidebar.module.css';
 import LogoIcon from '../assets/logo-icon.png';
 
@@ -15,6 +15,8 @@ const Sidebar = ({ onCollapse, mobileOpen, onMobileClose }) => {
         { icon: <RiBarChartLine size={20} />, text: 'Estadisticas', path: '/admin/statistics' },
         { icon: <RiUserLine size={20} />, text: 'Usuarios', path: '/admin/users' },
         { icon: <RiFileList2Line size={20} />, text: 'Reportes', path: '/admin/reports' },
+        { icon: <RiUser3Line size={20} />, text: 'Mi Perfil', path: '/admin/profile' },
+        { icon: <RiSettings4Line size={20} />, text: 'Empresa', path: '/admin/settings' },
     ];
 
     const handleNavigation = (item) => {

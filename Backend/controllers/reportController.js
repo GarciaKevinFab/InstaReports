@@ -103,7 +103,7 @@ export const createReport = async (req, res) => {
 export const getReports = async (req, res) => {
     try {
         const filter = req.user.role === 'admin' ? {} : { user: req.user._id };
-        const reports = await Report.find(filter).populate('user', 'name email');
+        const reports = await Report.find(filter).populate('user', 'name email signatureUrl position');
         res.json(reports);
     } catch (error) {
         console.error("Error al obtener los reportes:", error);

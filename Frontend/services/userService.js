@@ -53,3 +53,32 @@ export const updateUser = async (userId, userData) => {
         throw new Error(error.response?.data?.message || 'Error al actualizar el usuario');
     }
 };
+
+export const getMyProfile = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/users/me`, { headers: getAuthHeaders() });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error al obtener perfil');
+    }
+};
+
+export const updateMyProfile = async (formData) => {
+    try {
+        const response = await axios.put(`${API_URL}/users/me`, formData, {
+            headers: { ...getAuthHeaders(), 'Content-Type': 'multipart/form-data' },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error al actualizar perfil');
+    }
+};
+
+export const removeMySignature = async () => {
+    try {
+        const response = await axios.delete(`${API_URL}/users/me/signature`, { headers: getAuthHeaders() });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error al eliminar firma');
+    }
+};
