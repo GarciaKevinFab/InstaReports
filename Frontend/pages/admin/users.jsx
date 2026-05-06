@@ -3,323 +3,208 @@ import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getUsers, deleteUser, createUser, updateUser } from '../../services/userService';
 import AdminLayout from '../../components/AdminLayout';
-import styles from '../../styles/pages/Users.module.css';
-import { RiAddCircleLine, RiEditLine, RiDeleteBin6Line, RiSaveLine, RiCloseLine, RiUserAddLine, RiUserSettingsLine } from 'react-icons/ri';
+import { RiAddCircleLine, RiEditLine, RiDeleteBin6Line, RiSaveLine, RiCloseLine, RiUserAddLine, RiUserSettingsLine, RiShieldUserLine, RiToolsLine } from 'react-icons/ri';
 import { toast } from 'react-toastify';
+
+const modalStyles = {
+    overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    content: { position: 'relative', inset: 'auto', border: 'none', background: 'white', borderRadius: 16, padding: 0, maxWidth: 480, width: '92%', maxHeight: '90vh', overflow: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }
+};
 
 const Users = () => {
     const [users, setUsers] = useState([]);
-    const [error, setError] = useState(null);
     const [newUser, setNewUser] = useState({ name: '', email: '', role: 'technician', password: '' });
     const [editingUser, setEditingUser] = useState(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Fetch users on component mount
     useEffect(() => {
         const fetchUsers = async () => {
-            try {
-                const data = await getUsers();
-                setUsers(data);
-            } catch (err) {
-                setError('Error al obtener los usuarios');
-                toast.error('Error al obtener los usuarios');
-            }
+            try { setUsers(await getUsers()); } catch (err) { toast.error('Error al obtener los usuarios'); }
         };
         fetchUsers();
     }, []);
 
-    // Delete user
-    const handleDelete = async (id) => {
+    const handleDelete = async (id, name) => {
+        if (!confirm(`¿Eliminar al usuario "${name}"?`)) return;
         try {
             await deleteUser(id);
-            setUsers(users.filter((user) => user._id !== id));
-            toast.success('Usuario eliminado correctamente');
-        } catch (err) {
-            setError('Error al eliminar el usuario');
-            toast.error('Error al eliminar el usuario');
-        }
+            setUsers(users.filter(u => u._id !== id));
+            toast.success('Usuario eliminado');
+        } catch (err) { toast.error('Error al eliminar'); }
     };
 
-    // Create user
     const handleCreate = async () => {
-        if (!newUser.name || !newUser.email || !newUser.password) {
-            toast.error('Por favor, completa todos los campos');
-            return;
-        }
+        if (!newUser.name || !newUser.email || !newUser.password) { toast.error('Completa todos los campos'); return; }
         try {
             const user = await createUser(newUser);
             setUsers([...users, user]);
             setNewUser({ name: '', email: '', role: 'technician', password: '' });
             setIsCreateModalOpen(false);
-            toast.success('Usuario creado correctamente');
-        } catch (err) {
-            setError('Error al crear el usuario');
-            toast.error('Error al crear el usuario');
-        }
+            toast.success('Usuario creado');
+        } catch (err) { toast.error('Error al crear usuario'); }
     };
 
-    // Update user
     const handleUpdate = async () => {
-        if (!editingUser.name || !editingUser.email) {
-            toast.error('Por favor, completa todos los campos');
-            return;
-        }
+        if (!editingUser.name || !editingUser.email) { toast.error('Completa todos los campos'); return; }
         try {
-            const updatedUser = await updateUser(editingUser._id, editingUser);
-            setUsers(users.map((user) => (user._id === updatedUser._id ? updatedUser : user)));
+            const updated = await updateUser(editingUser._id, editingUser);
+            setUsers(users.map(u => u._id === updated._id ? updated : u));
             setEditingUser(null);
             setIsEditModalOpen(false);
-            toast.success('Usuario actualizado correctamente');
-        } catch (err) {
-            setError('Error al actualizar el usuario');
-            toast.error('Error al actualizar el usuario');
-        }
+            toast.success('Usuario actualizado');
+        } catch (err) { toast.error('Error al actualizar'); }
     };
 
-    // Animation variants for modals and table rows
-    const modalVariants = {
-        hidden: { opacity: 0, scale: 0.9 },
-        visible: { opacity: 1, scale: 1 },
-        exit: { opacity: 0, scale: 0.9 }
-    };
-
-    const rowVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -20 }
-    };
+    const getInitials = (name) => name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?';
 
     return (
         <AdminLayout>
-            <div className={styles.usersContainer}>
-                <h2 className={styles.header}>
-                    <RiUserSettingsLine size={28} style={{ marginRight: '8px' }} /> Usuarios
-                </h2>
-                <p className={styles.description}>
-                    Gestiona los usuarios del sistema, incluyendo creación, edición y eliminación de cuentas.
-                </p>
-                {error && (
-                    <motion.p
-                        className={styles.error}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        {error}
-                    </motion.p>
-                )}
+            <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 24 }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Usuarios</h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: 4 }}>Gestiona las cuentas del sistema</p>
+                </motion.div>
 
-                {/* Button to open create user modal */}
                 <motion.button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className={styles.createButton}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{ background: 'var(--accent)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}
                 >
-                    <RiAddCircleLine size={20} style={{ marginRight: '8px' }} /> Crear Usuario
+                    <RiAddCircleLine size={18} /> Nuevo Usuario
                 </motion.button>
 
-                {/* Users table */}
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <AnimatePresence>
-                            {users.map((user) => (
-                                <motion.tr
-                                    key={user._id}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="exit"
-                                    variants={rowVariants}
-                                    transition={{ duration: 0.3 }}
-                                    whileHover={{ scale: 1.01 }}
-                                >
-                                    <td>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.role === 'technician' ? 'Técnico' : 'Administrador'}</td>
-                                    <td>
-                                        <motion.button
-                                            onClick={() => {
-                                                setEditingUser(user);
-                                                setIsEditModalOpen(true);
-                                            }}
-                                            className={styles.actionButton}
-                                            whileHover={{ scale: 1.1 }}
-                                            title="Editar usuario"
-                                        >
-                                            <RiEditLine size={20} />
-                                        </motion.button>
-                                        <motion.button
-                                            onClick={() => handleDelete(user._id)}
-                                            className={styles.actionButton}
-                                            whileHover={{ scale: 1.1 }}
-                                            title="Eliminar usuario"
-                                        >
-                                            <RiDeleteBin6Line size={20} />
-                                        </motion.button>
-                                    </td>
-                                </motion.tr>
-                            ))}
-                        </AnimatePresence>
-                    </tbody>
-                </table>
-
-                {/* Modal for creating a user */}
-                <Modal
-                    isOpen={isCreateModalOpen}
-                    onRequestClose={() => setIsCreateModalOpen(false)}
-                    className={styles.modal}
-                    overlayClassName={styles.overlay}
-                    ariaHideApp={false}
-                >
-                    <motion.div
-                        className={styles.modalContent}
-                        variants={modalVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                    >
-                        <h3 className={styles.modalHeader}>
-                            <RiUserAddLine size={24} style={{ marginRight: '8px' }} /> Crear Usuario
-                        </h3>
-                        <div className={styles.formGroup}>
-                            <label>Nombre</label>
-                            <input
-                                type="text"
-                                placeholder="Ingresa el nombre"
-                                value={newUser.name}
-                                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                placeholder="Ingresa el email"
-                                value={newUser.email}
-                                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Contraseña</label>
-                            <input
-                                type="password"
-                                placeholder="Ingresa la contraseña"
-                                value={newUser.password}
-                                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Rol</label>
-                            <select
-                                value={newUser.role}
-                                onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                {/* User Cards Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+                    <AnimatePresence>
+                        {users.map((user, i) => (
+                            <motion.div
+                                key={user._id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ delay: i * 0.05 }}
+                                whileHover={{ y: -3, boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}
+                                style={{
+                                    background: 'white', borderRadius: 14, padding: 20,
+                                    border: '1px solid var(--border-light)',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                                    display: 'flex', flexDirection: 'column', gap: 16,
+                                }}
                             >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                                    <div style={{
+                                        width: 48, height: 48, borderRadius: 12,
+                                        background: user.role === 'admin' ? 'linear-gradient(135deg, var(--accent), var(--accent-dark))' : 'linear-gradient(135deg, var(--primary), var(--primary-light))',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        color: 'white', fontWeight: 700, fontSize: '1rem', flexShrink: 0,
+                                    }}>
+                                        {getInitials(user.name)}
+                                    </div>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <p style={{ fontWeight: 600, fontSize: '0.95rem', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</p>
+                                        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <span style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: 5,
+                                        padding: '4px 12px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600,
+                                        background: user.role === 'admin' ? '#fef2f2' : '#eff6ff',
+                                        color: user.role === 'admin' ? '#dc2626' : '#2563eb',
+                                    }}>
+                                        {user.role === 'admin' ? <RiShieldUserLine size={14} /> : <RiToolsLine size={14} />}
+                                        {user.role === 'admin' ? 'Administrador' : 'Técnico'}
+                                    </span>
+                                    <div style={{ display: 'flex', gap: 6 }}>
+                                        <button onClick={() => { setEditingUser({ ...user }); setIsEditModalOpen(true); }}
+                                            style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: 8, padding: 7, cursor: 'pointer', color: 'var(--primary)', display: 'flex', transition: 'all 0.2s' }}
+                                            title="Editar"
+                                        >
+                                            <RiEditLine size={16} />
+                                        </button>
+                                        <button onClick={() => handleDelete(user._id, user.name)}
+                                            style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: 7, cursor: 'pointer', color: '#dc2626', display: 'flex', transition: 'all 0.2s' }}
+                                            title="Eliminar"
+                                        >
+                                            <RiDeleteBin6Line size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
+
+                {/* Create Modal */}
+                <Modal isOpen={isCreateModalOpen} onRequestClose={() => setIsCreateModalOpen(false)} style={modalStyles} ariaHideApp={false}>
+                    <div style={{ padding: 28 }}>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--primary)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <RiUserAddLine size={22} /> Nuevo Usuario
+                        </h3>
+                        {[
+                            { label: 'Nombre', key: 'name', type: 'text', placeholder: 'Nombre completo' },
+                            { label: 'Email', key: 'email', type: 'email', placeholder: 'correo@ejemplo.com' },
+                            { label: 'Contraseña', key: 'password', type: 'password', placeholder: 'Mínimo 6 caracteres' },
+                        ].map(f => (
+                            <div key={f.key} style={{ marginBottom: 14 }}>
+                                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 4 }}>{f.label}</label>
+                                <input type={f.type} placeholder={f.placeholder} value={newUser[f.key]} onChange={(e) => setNewUser({ ...newUser, [f.key]: e.target.value })}
+                                    style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: '0.9rem', fontFamily: 'inherit', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                                />
+                            </div>
+                        ))}
+                        <div style={{ marginBottom: 20 }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 4 }}>Rol</label>
+                            <select value={newUser.role} onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                                style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: '0.9rem', fontFamily: 'inherit', boxSizing: 'border-box' }}>
                                 <option value="technician">Técnico</option>
                                 <option value="admin">Administrador</option>
                             </select>
                         </div>
-                        <div className={styles.modalActions}>
-                            <motion.button
-                                onClick={handleCreate}
-                                className={styles.saveButton}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <RiSaveLine size={20} style={{ marginRight: '8px' }} /> Guardar
-                            </motion.button>
-                            <motion.button
-                                onClick={() => setIsCreateModalOpen(false)}
-                                className={styles.closeButton}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <RiCloseLine size={20} style={{ marginRight: '8px' }} /> Cerrar
-                            </motion.button>
+                        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+                            <button onClick={() => setIsCreateModalOpen(false)} style={{ padding: '10px 20px', border: '1.5px solid var(--border)', borderRadius: 8, background: 'white', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
+                            <button onClick={handleCreate} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--accent)', color: 'white', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Crear Usuario</button>
                         </div>
-                    </motion.div>
+                    </div>
                 </Modal>
 
-                {/* Modal for editing a user */}
-                <Modal
-                    isOpen={isEditModalOpen}
-                    onRequestClose={() => setIsEditModalOpen(false)}
-                    className={styles.modal}
-                    overlayClassName={styles.overlay}
-                    ariaHideApp={false}
-                >
-                    <motion.div
-                        className={styles.modalContent}
-                        variants={modalVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                    >
-                        <h3 className={styles.modalHeader}>
-                            <RiUserSettingsLine size={24} style={{ marginRight: '8px' }} /> Editar Usuario
+                {/* Edit Modal */}
+                <Modal isOpen={isEditModalOpen} onRequestClose={() => setIsEditModalOpen(false)} style={modalStyles} ariaHideApp={false}>
+                    <div style={{ padding: 28 }}>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--primary)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <RiUserSettingsLine size={22} /> Editar Usuario
                         </h3>
                         {editingUser && (
                             <>
-                                <div className={styles.formGroup}>
-                                    <label>Nombre</label>
-                                    <input
-                                        type="text"
-                                        value={editingUser.name}
-                                        onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label>Email</label>
-                                    <input
-                                        type="email"
-                                        value={editingUser.email}
-                                        onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label>Rol</label>
-                                    <select
-                                        value={editingUser.role}
-                                        onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                                    >
+                                {[
+                                    { label: 'Nombre', key: 'name', type: 'text' },
+                                    { label: 'Email', key: 'email', type: 'email' },
+                                ].map(f => (
+                                    <div key={f.key} style={{ marginBottom: 14 }}>
+                                        <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 4 }}>{f.label}</label>
+                                        <input type={f.type} value={editingUser[f.key]} onChange={(e) => setEditingUser({ ...editingUser, [f.key]: e.target.value })}
+                                            style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: '0.9rem', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                                        />
+                                    </div>
+                                ))}
+                                <div style={{ marginBottom: 20 }}>
+                                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 4 }}>Rol</label>
+                                    <select value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+                                        style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: '0.9rem', fontFamily: 'inherit', boxSizing: 'border-box' }}>
                                         <option value="technician">Técnico</option>
                                         <option value="admin">Administrador</option>
                                     </select>
                                 </div>
-                                <div className={styles.modalActions}>
-                                    <motion.button
-                                        onClick={handleUpdate}
-                                        className={styles.saveButton}
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <RiSaveLine size={20} style={{ marginRight: '8px' }} /> Guardar
-                                    </motion.button>
-                                    <motion.button
-                                        onClick={() => setIsEditModalOpen(false)}
-                                        className={styles.closeButton}
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <RiCloseLine size={20} style={{ marginRight: '8px' }} /> Cerrar
-                                    </motion.button>
+                                <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+                                    <button onClick={() => setIsEditModalOpen(false)} style={{ padding: '10px 20px', border: '1.5px solid var(--border)', borderRadius: 8, background: 'white', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
+                                    <button onClick={handleUpdate} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--accent)', color: 'white', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Guardar</button>
                                 </div>
                             </>
                         )}
-                    </motion.div>
+                    </div>
                 </Modal>
             </div>
         </AdminLayout>

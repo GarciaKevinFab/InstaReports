@@ -1,10 +1,9 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import { useAuthContext } from '../contexts/AuthContext';
 import styles from '../styles/components/Navbar.module.css';
 import { motion } from 'framer-motion';
 import { RiLogoutBoxLine, RiMenuLine } from 'react-icons/ri';
-import Logo from '../assets/LOGO2_Mesa de trabajo 1.png';
+import Image from 'next/image';
+import LogoIcon from '../assets/logo-icon.png';
 
 const Navbar = ({ onMenuToggle }) => {
     const { user, handleLogout } = useAuthContext();
@@ -25,13 +24,9 @@ const Navbar = ({ onMenuToggle }) => {
                 <button className={styles.menuButton} onClick={onMenuToggle}>
                     <RiMenuLine size={22} />
                 </button>
-                <div className={styles.logoContainer}>
-                    <div className={styles.logo}>
-                        <Link href="/">
-                            <Image src={Logo} alt="InstaReports" width={100} height={50} priority style={{ objectFit: 'contain' }} />
-                        </Link>
-                    </div>
-                    <span className={styles.logoText}>Soluciones Informáticas</span>
+                <div className={styles.logoBrand}>
+                    <Image src={LogoIcon} alt="InstaReports" width={38} height={38} priority style={{ objectFit: 'contain' }} />
+                    <span className={styles.brandName}>InstaReports</span>
                 </div>
             </div>
 

@@ -1,4 +1,3 @@
-/* Navbar - Professional Redesign */
 .navbar {
     display: flex;
     align-items: center;
@@ -13,7 +12,6 @@
     height: var(--navbar-height);
     z-index: 1100;
     box-sizing: border-box;
-    backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -34,39 +32,24 @@
     transition: var(--transition);
 }
 
-.menuButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
+.menuButton:hover { background: rgba(255, 255, 255, 0.1); }
 
-.logoContainer {
+.logoBrand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    text-decoration: none;
+    gap: 10px;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-}
-
-.logo a {
-    display: flex;
-    align-items: center;
-}
-
-.logoText {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+.brandName {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.02em;
 }
 
 .navRight {
     display: flex;
     align-items: center;
-    gap: 12px;
 }
 
 .userInfo {
@@ -84,7 +67,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.2);
 }
@@ -102,7 +85,7 @@
 }
 
 .userRole {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -126,39 +109,13 @@
 .logoutButton:hover {
     background: var(--accent);
     border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(227, 6, 19, 0.3);
 }
 
 @media (max-width: 768px) {
-    .navbar {
-        padding: 0 16px;
-    }
-
-    .menuButton {
-        display: flex;
-    }
-
-    .logoText {
-        display: none;
-    }
-
-    .userDetails {
-        display: none;
-    }
-
-    .logoutButton span {
-        display: none;
-    }
-
-    .logoutButton {
-        padding: 8px;
-    }
-}
-
-@media (max-width: 480px) {
-    .userAvatar {
-        width: 32px;
-        height: 32px;
-        font-size: 0.75rem;
-    }
+    .navbar { padding: 0 16px; }
+    .menuButton { display: flex; }
+    .brandName { display: none; }
+    .userDetails { display: none; }
+    .logoutButton span { display: none; }
+    .logoutButton { padding: 8px; }
 }
