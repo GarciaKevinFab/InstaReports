@@ -5,7 +5,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from '../styles/components/Login.module.css';
-import Logo from '../assets/logo.png';
+import Logo from '../assets/logo-icon.png';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
